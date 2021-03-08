@@ -10,7 +10,7 @@ public class InsultGenerator {
 		String vowels = "AEIOU";
 		String article = "an";
 		String theInsult = "";
-		
+		Connection connection=null;
 		try {
 			String databaseURL = "jdbc:postgresql://";
 			databaseURL += System.getenv("POSTGRESQL_SERVICE_HOST");
@@ -18,7 +18,7 @@ public class InsultGenerator {
 
 			String username = System.getenv("POSTGRESQL_USER");
 			String password = System.getenv("PGPASSWORD");
-			Connection connection = DriverManager.getConnection(databaseURL, username, password);
+			connection = DriverManager.getConnection(databaseURL, username, password);
 
 			if (connection != null) {
 				String SQL = "select a.string AS first, b.string AS second, c.string AS noun from short_adjective a , long_adjective b, noun c ORDER BY random() limit 1";
@@ -36,7 +36,9 @@ public class InsultGenerator {
 		} catch (Exception e) {			
 			return "Database connection problem!";
 		} finally {
-			connection.close();
+			if(connection != null ) {
+				connection.close();
+			}
 		}
 		return theInsult;
 	}
